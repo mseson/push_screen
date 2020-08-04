@@ -1,3 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.wangxiaobao.plugin.push.push_screen">
+    package="com.wangxiaobao.plugin.push.push_screen">
+    <!-- 解锁屏幕需要的权限 -->
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <!-- 申请电源锁需要的权限 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true"
+        android:label="push_screen"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:replace="android:label">
+        <activity android:name="com.wangxiaobao.plugin.push.push_screen.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.wangxiaobao.plugin.push.push_screen.TestActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:taskAffinity="">
+
+        </activity>
+        <activity
+            android:name="com.wangxiaobao.plugin.push.push_screen.DetailsActivity">
+        </activity>
+
+        <receiver
+            android:name="com.wangxiaobao.plugin.push.push_screen.LockScreenMsgReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+
+                <!-- 监听锁屏消息 -->
+                <action android:name="com.demo.lockscreenmsgdemo.LockScreenMsgReceiver" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.wangxiaobao.plugin.push.push_screen.MyService"
+            android:enabled="true"
+            android:exported="true" />
+
+    </application>
+
 </manifest>
