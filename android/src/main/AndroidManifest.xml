@@ -20,11 +20,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.wangxiaobao.plugin.push.push_screen.TestActivity"
+            android:name="com.wangxiaobao.plugin.push.push_screen.ScreenActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:taskAffinity="">
-
         </activity>
         <activity
             android:name="com.wangxiaobao.plugin.push.push_screen.DetailsActivity">

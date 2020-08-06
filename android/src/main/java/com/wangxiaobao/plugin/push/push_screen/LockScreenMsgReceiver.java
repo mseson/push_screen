@@ -43,8 +43,9 @@ public class LockScreenMsgReceiver extends BroadcastReceiver {
             if(Build.VERSION.SDK_INT >= 26){
                 alarmIntent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
             }
+            //启动显示锁屏消息的activity
+            context.startActivity(alarmIntent);
 
-            context.startActivity(alarmIntent); //启动显示锁屏消息的activity
         }
     }
 }

@@ -53,52 +53,33 @@ public class PushScreenPlugin implements FlutterPlugin, MethodCallHandler {
         if (call.method.equals("getPlatformVersion")) {
             Log.d("native : ","getPlatformVersion");
             result.success("Android " + android.os.Build.VERSION.RELEASE);
-            //启动后台服务
-//            Intent intent = new Intent(mContext, MyService.class);
-//            mContext.startService(intent);
 
-//            Intent intent = new Intent();
-//            intent.setAction("com.wangxiaobao.plugin.push.push_screen.LockScreenMsgReceiver");
-//            //Android O版本对后台进程做了限制广播的发送，对隐式广播也做了限制；必须要指定接受广播类的包名和类名
-//            //解决Background execution not allowed-----8.0以上发送的隐式广播无法被收到问题
-//            intent.setComponent(new ComponentName("com.wangxiaobao.plugin.push.push_screen_example","com.wangxiaobao.plugin.push.push_screen.LockScreenMsgReceiver"));
-//            mContext.sendBroadcast(intent); //发
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(20000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    KeyguardManager km = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
-                    String text = km.inKeyguardRestrictedInputMode() ? "锁屏了" : "屏幕亮着的";
-                    android.util.Log.i(TAG, "text: " + text);
-                    if (km.inKeyguardRestrictedInputMode()) {
-                        android.util.Log.i(TAG, "onReceive:锁屏了 ");
+        } else if (call.method.equals("startScreen")){
+            KeyguardManager km = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+            String text = km.inKeyguardRestrictedInputMode() ? "锁屏了" : "屏幕亮着的";
+            android.util.Log.i(TAG, "text: " + text);
+            if (km.inKeyguardRestrictedInputMode()) {
+                android.util.Log.i(TAG, "onReceive:锁屏了 ");
 
-                        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                        if (!pm.isScreenOn()) {
-                            android.util.Log.i(TAG, "onReceive:电源点亮屏幕");
-                            @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_DIM_WAKE_LOCK, "bright");
-                            //获取PowerManager.WakeLock对象,后面的参数|表示同时传入两个值,最后的是LogCat里用的Tag
-                            wl.acquire();  //点亮屏幕
-                        }
-                    }
-                    //判断是否锁屏
-                    Intent alarmIntent = new Intent(context, TestActivity.class);
-                    //在广播中启动Activity的context可能不是Activity对象，所以需要添加NEW_TASK的标志，否则启动时可能会报错。
-                    alarmIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    if(Build.VERSION.SDK_INT >= 26){
-                        alarmIntent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
-                    }
-
-                    context.startActivity(alarmIntent); //
+                PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+                if (!pm.isScreenOn()) {
+                    android.util.Log.i(TAG, "onReceive:电源点亮屏幕");
+                    @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_DIM_WAKE_LOCK, "bright");
+                    //获取PowerManager.WakeLock对象,后面的参数|表示同时传入两个值,最后的是LogCat里用的Tag
+                    wl.acquire();  //点亮屏幕
                 }
-            }).start();
+            }
+            //判断是否锁屏
+            Intent alarmIntent = new Intent(context, ScreenActivity.class);
+            //在广播中启动Activity的context可能不是Activity对象，所以需要添加NEW_TASK的标志，否则启动时可能会报错。
+            alarmIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if(Build.VERSION.SDK_INT >= 26){
+                alarmIntent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
+            }
+            context.startActivity(alarmIntent);
+        } else if(call.method.equals("finishScreen")){
 
-
-        } else {
+        }else {
             result.notImplemented();
         }
     }
