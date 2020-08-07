@@ -2,12 +2,10 @@ package com.wangxiaobao.plugin.push.push_screen;
 
 import android.annotation.SuppressLint;
 import android.app.KeyguardManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.PowerManager;
-
 import androidx.annotation.NonNull;
 import io.flutter.Log;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -55,6 +53,15 @@ public class PushScreenPlugin implements FlutterPlugin, MethodCallHandler {
             result.success("Android " + android.os.Build.VERSION.RELEASE);
 
         } else if (call.method.equals("startScreen")){
+            String project= call.argument("project");
+            String cardInfo = call.argument("cardInfo");
+            String vrModel= call.argument("vrModel");
+            String roomId= call.argument("roomId");
+            int terminal= call.argument("terminal");
+            String projectAccount= call.argument("projectAccount");
+            String vrTitle= call.argument("vrTitle");
+            String clientId= call.argument("clientId");
+
             KeyguardManager km = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
             String text = km.inKeyguardRestrictedInputMode() ? "锁屏了" : "屏幕亮着的";
             android.util.Log.i(TAG, "text: " + text);
@@ -76,6 +83,14 @@ public class PushScreenPlugin implements FlutterPlugin, MethodCallHandler {
             if(Build.VERSION.SDK_INT >= 26){
                 alarmIntent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
             }
+            alarmIntent.putExtra("project",project);
+            alarmIntent.putExtra("cardInfo",cardInfo);
+            alarmIntent.putExtra("vrModel",vrModel);
+            alarmIntent.putExtra("roomId",roomId);
+            alarmIntent.putExtra("terminal",terminal);
+            alarmIntent.putExtra("projectAccount",projectAccount);
+            alarmIntent.putExtra("vrTitle",vrTitle);
+            alarmIntent.putExtra("clientId",clientId);
             context.startActivity(alarmIntent);
         } else if(call.method.equals("finishScreen")){
 

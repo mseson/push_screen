@@ -1,6 +1,6 @@
 package com.wangxiaobao.plugin.push.push_screen;
 
-import android.app.Activity;
+
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -11,7 +11,19 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class ScreenActivity extends Activity {
+import io.flutter.app.FlutterActivity;
+import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.dart.DartExecutor;
+import io.flutter.plugin.common.BasicMessageChannel;
+import io.flutter.plugin.common.StringCodec;
+
+
+public class ScreenActivity extends FlutterActivity {
+
+    private static BasicMessageChannel chanel;
+    private static final String CHANNEL_NATIVE = "com.wxb.flutter/screen";
+    private FlutterEngine flutterEngine;
+
 
     private ImageView headImg;
     private TextView nameText;
@@ -19,11 +31,22 @@ public class ScreenActivity extends Activity {
     private ImageView vr;
     private Context mContext;
 
+
+    String project;
+    String cardInfo;
+    String vrModel;
+    String roomId;
+    int terminal;
+    String projectAccount;
+    String vrTitle;
+    String clientId;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mContext=this;
+        mContext = this;
         //四个标志位顾名思义，分别是锁屏状态下显示，解锁，保持屏幕长亮，打开屏幕。这样当Activity启动的时候，它会解锁并亮屏显示。
         Window win = getWindow();
         win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED //锁屏状态下显示
@@ -48,6 +71,7 @@ public class ScreenActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //忽略
+                finish();
             }
         });
 
@@ -55,13 +79,30 @@ public class ScreenActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //带看
+                if (chanel!=null){
+                    chanel.send("VR带看");
+                }
             }
         });
+
+
+        flutterEngine = new FlutterEngine(this);
+        flutterEngine.getNavigationChannel().setInitialRoute("route1");
+        flutterEngine.getDartExecutor().executeDartEntrypoint(
+                DartExecutor.DartEntrypoint.createDefault()
+        );
+
     }
 
     private void initData() {
-        String name = getIntent().getStringExtra("");
-        String headImg = getIntent().getStringExtra("");
-        nameText.setText(name);
+        project = getIntent().getStringExtra("project");
+        cardInfo = getIntent().getStringExtra("cardInfo");
+        vrModel = getIntent().getStringExtra("vrModel");
+        roomId = getIntent().getStringExtra("roomId");
+        terminal = getIntent().getIntExtra("terminal", -1);
+        projectAccount = getIntent().getStringExtra("projectAccount");
+        vrTitle = getIntent().getStringExtra("vrTitle");
+        clientId = getIntent().getStringExtra("clientId");
+        chanel = new BasicMessageChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL_NATIVE, StringCodec.INSTANCE);
     }
 }
