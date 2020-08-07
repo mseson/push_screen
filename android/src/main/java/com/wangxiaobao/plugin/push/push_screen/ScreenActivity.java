@@ -82,6 +82,7 @@ public class ScreenActivity extends FlutterActivity {
                 if (chanel!=null){
                     chanel.send("VR带看");
                 }
+                finish();
             }
         });
 

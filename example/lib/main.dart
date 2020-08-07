@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:push_screen/push_screen.dart';
+import 'package:push_screen_example/secondPage.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,11 +14,17 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-
+  BasicMessageChannel _messageChannelAndroid =  BasicMessageChannel('com.wxb.flutter/screen', StringCodec());
   @override
   void initState() {
     super.initState();
     initPlatformState();
+    _messageChannelAndroid.setMessageHandler(_handleMessageAndroid);
+  }
+
+  Future<String> _handleMessageAndroid( message) async {
+    print('收到native的消息${message.toString()}');
+
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
